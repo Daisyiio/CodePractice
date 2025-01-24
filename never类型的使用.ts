@@ -11,3 +11,13 @@ function request(method: METHOD, url: string) {
       let n: never = method
   }
 }
+
+function log<T>(x: T extends number ? never : T) {}
+//除了number 类型别的都行
+
+
+// 优化
+type BandType<T, K> = T extends K ? never : T
+function log2<T>(x: BandType<T, string>) {}
+
+
