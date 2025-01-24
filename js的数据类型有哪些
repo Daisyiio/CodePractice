@@ -1,0 +1,137 @@
+#from duyi
+#原始类型:Number、String、Boolean、Symbol、BigInt、undefined、null
+#对象类型 Object
+
+
+
+#from gpt
+在 JavaScript 中，数据类型分为 **基本数据类型**（Primitive Types）和 **引用数据类型**（Reference Types）。以下是具体的数据类型分类：
+### 一、基本数据类型（Primitive Types）
+这些数据类型直接存储值，属于不可变类型。
+
+1. **Number（数字类型）**
+   - 包括整数和浮点数，例如：`42`，`3.14`，`-7`。
+   - 特殊值：
+     - `NaN`（Not-a-Number）：表示非数值。
+     - `Infinity` 和 `-Infinity`：正负无穷大。
+
+2. **BigInt**
+   - 表示任意长度的整数，用于处理超出 `Number` 范围的大数值。
+   - 声明方式：在数字后加 `n`，例如：`123456789012345678901234567890n`。
+
+3. **String（字符串类型）**
+   - 表示一串文本数据。
+   - 可以用单引号 `'`，双引号 `"`，或者反引号 `` ` `` 包裹。
+   - 示例：`'hello'`，`"world"`，`` `Template ${expression}` ``。
+
+4. **Boolean（布尔类型）**
+   - 表示逻辑值，只有两个值：`true` 和 `false`。
+   - 示例：`let isActive = true;`
+
+5. **Undefined（未定义类型）**
+   - 表示变量已声明但尚未赋值。
+   - 示例：`let x; console.log(x); // undefined`
+
+6. **Null（空类型）**
+   - 表示空值或空对象引用。
+   - 示例：`let y = null;`
+
+7. **Symbol**
+   - 表示唯一且不可变的值，通常用于对象属性的唯一标识符。
+   - 声明方式：`const sym = Symbol('description');`
+
+---
+
+### 二、引用数据类型（Reference Types）
+这些数据类型存储的是对象的引用，属于可变类型。
+
+1. **Object（对象类型）**
+   - JavaScript 的核心类型，用于存储键值对或更复杂的数据结构。
+   - 示例：
+     ```javascript
+     const person = { name: "Alice", age: 25 };
+     ```
+
+2. **Array（数组）**
+   - 一种特殊的对象，用于存储有序的集合。
+   - 示例：
+     ```javascript
+     const arr = [1, 2, 3];
+     ```
+
+3. **Function（函数）**
+   - 一种可调用的对象，用于封装代码块。
+   - 示例：
+     ```javascript
+     function greet() {
+       console.log("Hello!");
+     }
+     ```
+
+4. **Date（日期）**
+   - 用于处理日期和时间。
+   - 示例：
+     ```javascript
+     const today = new Date();
+     ```
+
+5. **RegExp（正则表达式）**
+   - 用于匹配字符串的模式。
+   - 示例：
+     ```javascript
+     const regex = /abc/;
+     ```
+
+6. **Map 和 WeakMap**
+   - `Map`：键值对集合，键可以是任意类型。
+   - `WeakMap`：类似于 `Map`，但键必须是对象，且对键是弱引用。
+   - 示例：
+     ```javascript
+     const map = new Map();
+     map.set('key', 'value');
+     ```
+
+7. **Set 和 WeakSet**
+   - `Set`：存储唯一值的集合。
+   - `WeakSet`：类似于 `Set`，但只能存储对象，且对对象是弱引用。
+   - 示例：
+     ```javascript
+     const set = new Set([1, 2, 3]);
+     ```
+
+---
+
+### 三、特殊情况
+1. **typeof 操作符的返回值**
+   - `typeof null` 返回 `'object'`（历史遗留问题）。
+   - `typeof []` 返回 `'object'`（数组是对象的一种）。
+   - `typeof NaN` 返回 `'number'`。
+
+2. **动态类型语言**
+   - JavaScript 是动态类型语言，变量的类型可以在运行时更改：
+     ```javascript
+     let x = 42;      // Number
+     x = "hello";     // String
+     x = true;        // Boolean
+     ```
+
+---
+
+### 数据类型总结表
+
+| 数据类型      | 分类          | 示例                           |
+|---------------|---------------|--------------------------------|
+| Number        | 基本类型      | `42`, `3.14`, `NaN`, `Infinity` |
+| BigInt        | 基本类型      | `12345678901234567890n`        |
+| String        | 基本类型      | `'hello'`, `"world"`           |
+| Boolean       | 基本类型      | `true`, `false`                |
+| Undefined     | 基本类型      | `undefined`                   |
+| Null          | 基本类型      | `null`                        |
+| Symbol        | 基本类型      | `Symbol('unique')`            |
+| Object        | 引用类型      | `{ name: 'Alice' }`           |
+| Array         | 引用类型      | `[1, 2, 3]`                   |
+| Function      | 引用类型      | `function() {}`               |
+| Date          | 引用类型      | `new Date()`                  |
+| RegExp        | 引用类型      | `/abc/`                       |
+| Map / WeakMap | 引用类型      | `new Map()`                   |
+| Set / WeakSet | 引用类型      | `new Set()`                   |
