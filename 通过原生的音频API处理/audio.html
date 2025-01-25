@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      html {
+        background-color: #000;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      canvas {
+        height: 50%;
+        border-bottom: 1px #fff solid;
+      }
+      audio {
+        margin: 3em auto;
+      }
+      .music-name {
+        margin: 1em auto;
+        color: #FFF;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="canvas"></canvas>
+    <audio src="./YOASOBI-優しい彗星.mp3" controls></audio>
+    <div class="music-name"></div>
+    <script src="./audio.js"></script>
+  </body>
+</html>
