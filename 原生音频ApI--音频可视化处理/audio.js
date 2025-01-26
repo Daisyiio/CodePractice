@@ -5,8 +5,7 @@ const ctx = cvs.getContext('2d')
 const MusicName = document.querySelector('.music-name')
 const audioSrc =  audioEle.src
 const decodedSrc = decodeURIComponent(audioSrc);
-MusicName.innerHTML =decodedSrc.split('/').pop().split('.').shift(); 
-
+MusicName.innerHTML = decodedSrc.split('/').pop().split('.').shift(); 
 
 // 初始化画布大小
 function initCvs() {
@@ -34,11 +33,13 @@ audioEle.onplay = function () {
 
   // 初始化音频上下文
   const audCtx = new AudioContext() // 创建音频上下文
+  console.log(audCtx,'audCtx')
   const source = audCtx.createMediaElementSource(audioEle) // 创建音频源节点
   analyser = audCtx.createAnalyser() // 创建音频分析器节点
   analyser.fftSize = 512 // 设定频率分析的大小，必须是2的n次幂
   dataArray = new Uint8Array(analyser.frequencyBinCount) // 创建数组用于存储频谱数据
-
+  console.log(analyser,'analyser')
+  console.log(source,'source')
   // 将音频源连接到分析器节点
   source.connect(analyser)
 
@@ -73,8 +74,12 @@ function draw() {
   // 计算每个条形图的宽度
   const barWidth = width / len / 2
 
-  // 设置条形图的颜色
-  ctx.fillStyle = '#78C5F7'
+  // 设置条形图的颜色，使用渐变色
+  const gradient = ctx.createLinearGradient(0, 0, width, 0);
+  gradient.addColorStop(0, '#78C5F7');
+  gradient.addColorStop(1, '#FF9A8B');
+  
+  ctx.fillStyle = gradient
 
   // 绘制频谱条形图
   for (let i = 0; i < dataArray.length; i++) {
