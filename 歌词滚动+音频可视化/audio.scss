@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 1);
+  // background-image: url('./wallhaven-z8pm7y.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+.mask {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba($color: #000000, $alpha: 0.2);
+  backdrop-filter: blur(3px);
+  z-index: -1;
+}
+audio {
+  margin: 3em auto;
+}
+/* 毛玻璃背景 + 渐变 */
+canvas {
+  // background: rgba(255, 255, 255, 0.2);
+  // background: linear-gradient(135deg, rgba(114, 124, 218, 0.2), rgba(0, 255, 255, 0.2));
+  // border-radius: 15px;
+  // box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+  // margin: 0 auto;
+  display: block;
+  // border: 2px solid rgba(255, 255, 255, 0.3);
+  // position: absolute;
+  box-sizing: border-box;
+  // backdrop-filter: blur(10px);
+  background-color: rgba($color: #000, $alpha: 0.2);
+  height: 20%;
+  width: 100%;
+  z-index: -1;
+}
+
+/* 音乐名称样式 */
+.music-name {
+  font-size: 20px;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* 给文本添加阴影 */
+  letter-spacing: 2px; /* 字母间距 */
+}
+
+audio {
+  width: 450px;
+  margin: 30px 0;
+}
+
+.container {
+  height: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: hidden;
+  /* backdrop-filter: blur(20px); */
+  color: #666;
+}
+
+.container li {
+  height: 30px;
+  line-height: 30px;
+  transition: 0.5s;
+}
+.container ul {
+  height: fit-content;
+  transition: all 0.2s;
+  /* overflow: hidden; */
+  list-style: none;
+  /* overflow: auto; */
+}
+
+.container li.active {
+  color: #fff;
+  transform: scale(1.2);
+}
