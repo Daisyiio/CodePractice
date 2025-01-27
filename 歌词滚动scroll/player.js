@@ -78,6 +78,7 @@ function setOffset() {
   let indexarr = findIndex()
   let liOffset = doms.ul.children[indexarr[indexarr.length -1]]?.offsetTop  || 0
   let li = doms.ul.querySelectorAll('.active')
+
   if (li) {
     li.forEach((item) => {
       item.classList.remove('active')
