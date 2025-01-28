@@ -74,9 +74,11 @@ createLrcElements()
 let containerHeight = doms.container.clientHeight
 let liHeight = doms.ul.children[0].clientHeight
 let maxOffset = doms.ul.clientHeight - containerHeight
+let lastIndex = -1; // 用于记录上一次播放的歌词索引
+
 function setOffset() {
   let indexarr = findIndex()
-  let liOffset = doms.ul.children[indexarr[indexarr.length -1]]?.offsetTop  || 0
+  let liOffset = doms.ul.children[indexarr[indexarr.length - 1]]?.offsetTop || 0
   let li = doms.ul.querySelectorAll('.active')
 
   if (li) {
@@ -84,10 +86,10 @@ function setOffset() {
       item.classList.remove('active')
     })
   }
-  if(indexarr[0]<1 || liOffset <0){
-    doms.ul.scrollTop= 0
-  }else{
-    doms.ul.scrollTop = liOffset - (containerHeight / 2) + (liHeight / 2);
+  if (indexarr[0] < 1 || liOffset < 0) {
+    doms.ul.scrollTop = 0
+  } else {
+    doms.ul.scrollTop = liOffset - containerHeight / 2 + liHeight / 2
   }
   for (let i = 0; i < indexarr.length; i++) {
     doms.ul.children[indexarr[i]]?.classList.add('active')

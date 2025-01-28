@@ -9,7 +9,9 @@ const MusicName = document.querySelector('.music-name')
 const audioSrc =  audio.src
 const decodedSrc = decodeURIComponent(audioSrc);
 MusicName.innerHTML = decodedSrc.split('/').pop().split('.').shift(); 
-function PlayerStart() {}
+function PlayerStart() {
+  
+}
 
 // 播放/暂停
 playPauseBtn.addEventListener('click', () => {
