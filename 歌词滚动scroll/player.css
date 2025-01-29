@@ -106,7 +106,7 @@ body {
   box-sizing: border-box;
 }
 
-input[type=range] {
+input[type='range'] {
   transition: all 0.2s ease; /* 可以调整时间和缓动函数 */
 }
 
@@ -167,6 +167,15 @@ input[type=range] {
 .volume {
   width: 80px;
   cursor: pointer;
+}
+
+canvas {
+  display: block;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 200px;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 /*# sourceMappingURL=player.css.map */

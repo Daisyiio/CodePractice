@@ -74,7 +74,7 @@ createLrcElements()
 let containerHeight = doms.container.clientHeight
 let liHeight = doms.ul.children[0].clientHeight
 let maxOffset = doms.ul.clientHeight - containerHeight
-let lastIndex=  []
+let lastIndex = []
 function setOffset() {
   let indexarr = findIndex()
   let liOffset = doms.ul.children[indexarr[indexarr.length - 1]]?.offsetTop || 0
@@ -86,7 +86,7 @@ function setOffset() {
     })
   }
 
-  if(isArrDiff(lastIndex,indexarr) ){
+  if (isArrDiff(lastIndex, indexarr)) {
     if (indexarr[0] < 1 || liOffset < 0) {
       doms.ul.scrollTop = 0
     } else {
@@ -97,20 +97,17 @@ function setOffset() {
     doms.ul.children[indexarr[i]]?.classList.add('active')
   }
   lastIndex = indexarr
-
 }
 doms.audio.addEventListener('timeupdate', () => {
   setOffset()
 })
 
-
-
-function isArrDiff(arr1,arr2){
-  if(arr1.length !== arr2.length){
+function isArrDiff(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
     return true
-  }else{
-    for(let i = 0;i<arr1.length;i++){
-      if(arr1[i] !== arr2[i]){
+  } else {
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) {
         return true
       }
     }

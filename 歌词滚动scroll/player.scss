@@ -23,18 +23,17 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-    /* 音乐名称样式 */
-    .music-name {
-      font-size: 20px;
-      color: #fff;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 20px;
-      padding: 10px 0 ;
-      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* 给文本添加阴影 */
-      letter-spacing: 2px; /* 字母间距 */
-    }
-    
+  /* 音乐名称样式 */
+  .music-name {
+    font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* 给文本添加阴影 */
+    letter-spacing: 2px; /* 字母间距 */
+  }
 }
 .container {
   flex: 1 0 0;
@@ -43,7 +42,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 20px 0 ;
+  padding: 20px 0;
   li {
     height: 30px;
     line-height: 30px;
@@ -110,7 +109,7 @@ body {
   color: #fff;
   box-sizing: border-box;
 }
-input[type="range"] {
+input[type='range'] {
   transition: all 0.2s ease; /* 可以调整时间和缓动函数 */
 }
 
@@ -185,4 +184,22 @@ input[type="range"] {
 .volume {
   width: 80px;
   cursor: pointer;
+}
+
+canvas {
+  // background: rgba(255, 255, 255, 0.2);
+  // background: linear-gradient(135deg, rgba(114, 124, 218, 0.2), rgba(0, 255, 255, 0.2));
+  // border-radius: 15px;
+  // box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+  // margin: 0 auto;
+  display: block;
+  // border: 2px solid rgba(255, 255, 255, 0.3);
+  // position: absolute;
+  box-sizing: border-box;
+  // backdrop-filter: blur(10px);
+  background-color: rgba($color: #000, $alpha: 0.2);
+  height: 200px;
+  width: 100%;
+  // z-index: -1;
+  margin-bottom: 20px;
 }

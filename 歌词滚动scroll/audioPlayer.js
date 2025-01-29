@@ -6,12 +6,10 @@ const totalTimeDisplay = document.getElementById('total-time')
 const muteBtn = document.getElementById('mute-btn')
 const volumeControl = document.getElementById('volume')
 const MusicName = document.querySelector('.music-name')
-const audioSrc =  audio.src
-const decodedSrc = decodeURIComponent(audioSrc);
-MusicName.innerHTML = decodedSrc.split('/').pop().split('.').shift(); 
-function PlayerStart() {
-  
-}
+const audioSrc = audio.src
+const decodedSrc = decodeURIComponent(audioSrc)
+MusicName.innerHTML = decodedSrc.split('/').pop().split('.').shift()
+function PlayerStart() {}
 
 // 播放/暂停
 playPauseBtn.addEventListener('click', () => {
@@ -32,7 +30,7 @@ muteBtn.addEventListener('click', () => {
     : '<i class="fas fa-volume-up"></i>'
 })
 
-// 更新进度条 
+// 更新进度条
 audio.addEventListener('timeupdate', () => {
   const percent = (audio.currentTime / audio.duration) * 100
   progress.value = percent
@@ -45,16 +43,16 @@ progress.addEventListener('input', () => {
     // 平滑更新滑块样式或值
     const time = (progress.value / 100) * audio.duration
     audio.currentTime = time
-  });
+  })
 })
 
 // 更新总时长
 audio.addEventListener('loadedmetadata', () => {
-  console.log(formatTime(audio.duration),'更新总时长')
+  console.log(formatTime(audio.duration), '更新总时长')
   getMetaData()
   // totalTimeDisplay.textContent = formatTime(audio.duration)
 })
-function getMetaData(){
+function getMetaData() {
   totalTimeDisplay.textContent = formatTime(audio.duration)
 }
 getMetaData()
