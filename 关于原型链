@@ -1,0 +1,133 @@
+**原型链**是 JavaScript 中实现继承和属性查找的核心机制。它的全貌可以通过以下内容来理解：
+
+---
+
+### 1. **原型链的基本概念**
+- 每个对象（`object`）都有一个隐藏的 `[[Prototype]]` 属性（在 ES6 中可以通过 `Object.getPrototypeOf()` 或 `__proto__` 访问）。
+- 这个 `[[Prototype]]` 指向另一个对象，称为该对象的**原型**。
+- 当访问一个对象的属性或方法时，如果对象本身没有该属性，JavaScript 会沿着 `[[Prototype]]` 向上查找，直到找到该属性或到达原型链的顶端（`null`）。
+- 这种链式查找的机制就是**原型链**。
+
+---
+
+### 2. **原型链的结构**
+原型链的结构可以用以下关系表示：
+
+```
+对象 -> 原型对象 -> 原型的原型 -> ... -> null
+```
+
+- 每个对象都有一个原型（`[[Prototype]]`），而原型本身也是一个对象，因此它也有自己的原型。
+- 最终，原型链的顶端是 `null`，表示没有更多的原型。
+
+---
+
+### 3. **构造函数、原型对象和实例的关系**
+- **构造函数**：通过 `new` 关键字调用的函数，用于创建对象。
+- **原型对象**：每个构造函数都有一个 `prototype` 属性，指向一个对象，称为**原型对象**。
+- **实例**：通过构造函数创建的对象，其 `[[Prototype]]` 指向构造函数的 `prototype` 对象。
+
+#### 示例：
+```javascript
+function Person(name) {
+  this.name = name;
+}
+
+// 原型对象
+Person.prototype.sayHello = function () {
+  console.log(`Hello, my name is ${this.name}`);
+};
+
+// 实例
+const person1 = new Person('Alice');
+
+// 原型链关系：
+// person1 -> Person.prototype -> Object.prototype -> null
+```
+
+- `person1` 是 `Person` 的实例，它的 `[[Prototype]]` 指向 `Person.prototype`。
+- `Person.prototype` 是一个对象，它的 `[[Prototype]]` 指向 `Object.prototype`。
+- `Object.prototype` 是原型链的顶端，它的 `[[Prototype]]` 是 `null`。
+
+---
+
+### 4. **原型链的查找过程**
+当访问一个对象的属性或方法时，JavaScript 会按照以下顺序查找：
+1. 检查对象自身是否有该属性。
+2. 如果没有，沿着 `[[Prototype]]` 向上查找，直到找到该属性或到达 `null`。
+
+#### 示例：
+```javascript
+console.log(person1.name); // 查找 person1 自身的属性，输出 "Alice"
+console.log(person1.sayHello()); // person1 自身没有 sayHello，沿着原型链找到 Person.prototype 上的 sayHello
+console.log(person1.toString()); // person1 和 Person.prototype 都没有 toString，沿着原型链找到 Object.prototype 上的 toString
+```
+
+---
+
+### 5. **原型链的顶端**
+- 所有对象的原型链最终都会指向 `Object.prototype`。
+- `Object.prototype` 是 JavaScript 中所有对象的根原型，它包含一些通用的方法，如 `toString()`、`hasOwnProperty()` 等。
+- `Object.prototype` 的 `[[Prototype]]` 是 `null`，表示原型链的终点。
+
+---
+
+### 6. **修改原型链**
+- 可以通过 `Object.setPrototypeOf()` 或直接修改 `__proto__` 来改变对象的原型链。
+- 也可以通过 `Object.create()` 创建一个新对象，并指定其原型。
+
+#### 示例：
+```javascript
+const animal = {
+  makeSound() {
+    console.log('Some sound');
+  },
+};
+
+const dog = Object.create(animal); // dog 的原型是 animal
+dog.makeSound(); // 输出 "Some sound"
+```
+
+---
+
+### 7. **原型链的图示**
+以下是一个原型链的完整图示：
+
+```
+实例 (person1) -> Person.prototype -> Object.prototype -> null
+```
+
+- `person1` 是 `Person` 的实例。
+- `Person.prototype` 是 `Person` 的原型对象。
+- `Object.prototype` 是所有对象的根原型。
+- `null` 是原型链的终点。
+
+---
+
+### 8. **原型链的应用**
+- **继承**：通过原型链实现对象之间的继承。
+- **共享方法**：将方法定义在原型对象上，所有实例共享这些方法，节省内存。
+- **扩展内置对象**：可以通过修改原型对象来扩展内置对象的功能（不推荐直接修改内置对象的原型）。
+
+#### 示例：
+```javascript
+// 扩展数组原型
+Array.prototype.last = function () {
+  return this[this.length - 1];
+};
+
+const arr = [1, 2, 3];
+console.log(arr.last()); // 输出 3
+```
+
+---
+
+### 9. **原型链的注意事项**
+- **性能问题**：原型链过长会导致属性查找变慢。
+- **循环引用**：避免在原型链中形成循环引用，否则会导致无限递归。
+- **修改原型**：动态修改原型会影响所有相关实例，需谨慎操作。
+
+---
+
+### 总结
+原型链是 JavaScript 中实现继承和属性查找的核心机制。通过理解构造函数、原型对象和实例之间的关系，可以更好地掌握 JavaScript 的面向对象编程。原型链的顶端是 `Object.prototype`，最终指向 `null`，形成一个链式结构。
