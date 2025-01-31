@@ -132,7 +132,6 @@
      ```javascript
      const obj = {};
      console.log(obj.toString()); // [object Object]
-
      // 原型链：
      // obj -> Object.prototype -> null
      ```
