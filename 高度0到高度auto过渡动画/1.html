@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .btn {
+        width: 200px;
+        cursor: pointer;
+      }
+
+      .detail {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.5s;
+        width: 200px;
+        background-color: #ddd;
+        margin-top: 20px;
+        overflow: hidden;
+      }
+
+      /* 关键：直接子元素设置 min-height: 0 */
+      .detail > .content {
+        min-height: 0;
+      }
+
+      /* 使用相邻兄弟选择器 */
+      .btn:hover + .detail {
+        grid-template-rows: 1fr;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="btn">button</div>
+      <div class="detail">
+        <div class="content">
+          This is the content that will be expanded.This is the content that
+          will be expanded.This is the content that will be expanded.This is the
+          content that will be expanded.This is the content that will be
+          expanded.This is the content that will be expanded.This is the content
+          that will be expanded.This is the content that will be expanded.This
+          is the content that will be expanded.This is the content that will be
+          expanded.This is the content that will be expanded.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
