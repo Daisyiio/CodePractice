@@ -1,8 +1,10 @@
 Function.prototype.myCall = function(context,...args){
     context = context === null || context === undefined ? globalThis:Object(context)
-    const fn  = this
-    const key = Symbol() 
-    context[key] = fn
+    const key = Symbol()
+    Object.defineProperty(context,key,{
+        enumerable:false,
+        value:this
+    }) 
     const result = context[key](...args)
     return result;
 }
@@ -13,4 +15,8 @@ function method(a,b){
 }
 
 
-method.call(1,2,3)
+method.myCall({},2,3)
+
+method.call({},2,3)
+
+ 
