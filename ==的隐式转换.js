@@ -1,5 +1,6 @@
 
 //？ 位置应该怎么写才能输出true
+// var a= ?
 var a = {
     n:1,
     valueOf:function(){
