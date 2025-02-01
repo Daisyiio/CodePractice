@@ -19,7 +19,6 @@ for (let i = 0; i < arr.length; i++) {
   }
 }
 
-
 function equals(obj1, obj2) {
   if (!isObject(obj1) || !isObject(obj2)) {
     return Object.is(obj1, obj2) // 对于基本类型进行比较，使用 Object.is 以处理特殊情况
@@ -49,4 +48,3 @@ function equals(obj1, obj2) {
 // +0 === -0（=== 会认为它们相等）
 
 console.log(arr, 'arr')
-
