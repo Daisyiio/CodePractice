@@ -81,3 +81,42 @@ function deepClone(value) {
 
   return _deepClone(value)
 }
+
+
+
+
+
+function deepClone(value){
+  if(value ===null || typeof value !=='object')
+  {
+    return value 
+  }
+  if(Array.isArray(value)){
+    let clone = []
+    for(let i =0;i<value.length;i++){
+      clone[i] = deepClone(value[i])
+    }
+    return clone
+  }
+  else if(typeof value ==='object'){
+    let clone = {}
+    for(let key in value){
+      clone[key] = deepClone(value[key])
+    }
+    return clone 
+  }
+  
+}
+
+
+
+function deepClone(value){
+  if(value === null || typeof value !=='object'){
+    return value 
+  }
+  let clone = Array.isArray(value)? [] :{}
+  for(let key in value ){
+    clone[key] = deepClone(value[key])
+  }
+  return clone
+}
