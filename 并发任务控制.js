@@ -5,6 +5,45 @@ function timeout(time) {
     }, time)
   })
 }
+class SuperTask{
+  
+}
+const superTask = new SuperTask()
+function addTask(time, name) {
+  superTask
+    .add(() => timeout(time))
+    .then(() => {
+      console.log(`任务${name}完成`)
+    })
+}
+
+addTask(10000, 1) //10000ms 后输出 任务1完成
+addTask(5000, 2) // 5000ms 后输出任务2 完成
+addTask(3000, 3) // 8000ms 后输出任务3 完成
+addTask(4000, 4) //12000ms 后输出 任务4 完成
+addTask(5000, 5) //15000ms 后输出  任务5 完成
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**这部分是答案---------------------------------------------------------------------------------
@@ -35,21 +74,4 @@ class SuperTask{
 }
 这部分是答案---------------------------------------------------------------------------------
  */
-
-const superTask = new SuperTask()
-function addTask(time, name) {
-  superTask
-    .add(() => timeout(time))
-    .then(() => {
-      console.log(`任务${name}完成`)
-    })
-}
-
-addTask(10000, 1) //10000ms 后输出 任务1完成
-addTask(5000, 2) // 5000ms 后输出任务2 完成
-addTask(3000, 3) // 8000ms 后输出任务3 完成
-addTask(4000, 4) //12000ms 后输出 任务4 完成
-addTask(5000, 5) //15000ms 后输出  任务5 完成
-
-
 
