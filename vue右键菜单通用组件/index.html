@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue3 Context Menu Demo</title>
+  <!-- Vue3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    /* 公共样式 */
+    .custom-area {
+      height: 200px;
+      border: 2px dashed #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 50px;
+    }
+
+    /* 菜单组件样式 */
+    .context-menu {
+      position: fixed;
+      background: white;
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      padding: 5px 0;
+      z-index: 9999;
+    }
+
+    .menu-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #606266;
+    }
+
+    .menu-item:hover {
+      background-color: #ecf5ff;
+      color: #409eff;
+    }
+
+    .menu-enter-active,
+    .menu-leave-active {
+      transition: all 0.2s ease;
+    }
+
+    .menu-enter-from,
+    .menu-leave-to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <context-menu :items="defaultItems" @select="handleSelect">
+      <template #trigger>
+        <div class="custom-area">
+          右键点击此区域
+        </div>
+      </template>
+
+      <div class="menu-item" @click="customAction">
+        自定义菜单项
+      </div>
+    </context-menu>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, watch } = Vue
+
+    // 上下文菜单组件
+    const ContextMenu = {
+      template: `
+        <div class="context-menu-wrapper">
+          <div @contextmenu.prevent="openMenu">
+            <slot name="trigger"></slot>
+          </div>
+
+          <teleport to="body">
+            <transition name="menu">
+              <div
+                v-show="visible"
+                ref="menuRef"
+                class="context-menu"
+                :style="menuStyle"
+                @click.stop
+              >
+                <div
+                  v-for="(item, index) in menuItems"
+                  :key="index"
+                  class="menu-item"
+                  @click="handleClick(item)"
+                >
+                  {{ item.label }}
+                </div>
+                <slot></slot>
+              </div>
+            </transition>
+          </teleport>
+        </div>
+      `,
+
+      props: {
+        items: {
+          type: Array,
+          default: () => []
+        },
+        modelValue: Boolean,
+        width: [String, Number],
+        offset: {
+          type: Number,
+          default: 4
+        }
+      },
+
+      emits: ['update:modelValue', 'select'],
+
+      setup(props, { emit }) {
+        const visible = ref(false)
+        const menuRef = ref(null)
+        const position = ref({ x: 0, y: 0 })
+
+        const menuItems = computed(() => [...props.items])
+
+        const menuStyle = computed(() => ({
+          left: `${position.value.x}px`,
+          top: `${position.value.y}px`,
+          width: props.width,
+          minWidth: typeof props.width === 'number' 
+            ? `${props.width}px` 
+            : props.width
+        }))
+
+        const openMenu = (e) => {
+          position.value = {
+            x: e.clientX + (props.offset || 4),
+            y: e.clientY + (props.offset || 4)
+          }
+          visible.value = true
+        }
+
+        const closeMenu = () => {
+          visible.value = false
+          emit('update:modelValue', false)
+        }
+
+        const handleClick = (item) => {
+          item.handler?.()
+          emit('select', item)
+          closeMenu()
+        }
+
+        // 点击外部关闭逻辑
+        const handleClickOutside = (event) => {
+          if (menuRef.value && !menuRef.value.contains(event.target)) {
+            closeMenu()
+          }
+        }
+
+        watch(visible, (val) => {
+          if (val) {
+            document.addEventListener('click', handleClickOutside)
+          } else {
+            document.removeEventListener('click', handleClickOutside)
+          }
+        })
+
+        watch(() => props.modelValue, (val) => {
+          visible.value = val
+        })
+
+        return {
+          visible,
+          menuRef,
+          position,
+          menuItems,
+          menuStyle,
+          openMenu,
+          closeMenu,
+          handleClick
+        }
+      }
+    }
+
+    // 主应用
+    const app = createApp({
+      setup() {
+        const defaultItems = [
+          { label: '刷新', handler: () => location.reload() },
+          { label: '返回', handler: () => history.back() }
+        ]
+
+        const handleSelect = (item) => {
+          console.log('Selected:', item)
+        }
+
+        const customAction = () => {
+          console.log('Custom action triggered')
+        }
+
+        return {
+          defaultItems,
+          handleSelect,
+          customAction
+        }
+      }
+    })
+
+    app.component('ContextMenu', ContextMenu)
+    app.mount('#app')
+  </script>
+</body>
+</html>
