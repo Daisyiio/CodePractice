@@ -19,4 +19,3 @@ method.myCall({},2,3)
 
 method.call({},2,3)
 
- 
