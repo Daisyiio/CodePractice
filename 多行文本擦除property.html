@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia optio
+        autem in fuga veniam, odio quia earum consequuntur tempore nobis eveniet
+        facilis sunt. Natus molestias mollitia reprehenderit saepe quod
+        similique numquam ex deleniti quidem, quas ullam nostrum maiores modi.
+        Amet quas laudantium consectetur fugit ab quaerat dicta suscipit,
+        maiores dolores? Nobis excepturi quas in voluptas nisi explicabo, quasi,
+        soluta tempora delectus minima voluptatum saepe cumque necessitatibus
+        repudiandae incidunt accusamus itaque nihil cum aperiam dolorem
+        reiciendis laborum illum fuga. Recusandae optio expedita at placeat
+        tempora doloribus fugit vitae vel provident libero, deserunt ipsa! Eius
+        dolorum minus deserunt ratione natus obcaecati? Voluptatum.
+      </p>
+      <p class="eraser">
+        <span class="text">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia optio
+          autem in fuga veniam, odio quia earum consequuntur tempore nobis
+          eveniet facilis sunt. Natus molestias mollitia reprehenderit saepe
+          quod similique numquam ex deleniti quidem, quas ullam nostrum maiores
+          modi. Amet quas laudantium consectetur fugit ab quaerat dicta
+          suscipit, maiores dolores? Nobis excepturi quas in voluptas nisi
+          explicabo, quasi, soluta tempora delectus minima voluptatum saepe
+          cumque necessitatibus repudiandae incidunt accusamus itaque nihil cum
+          aperiam dolorem reiciendis laborum illum fuga. Recusandae optio
+          expedita at placeat tempora doloribus fugit vitae vel provident
+          libero, deserunt ipsa! Eius dolorum minus deserunt ratione natus
+          obcaecati? Voluptatum.
+        </span>
+      </p>
+    </div>
+  </body>
+
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      margin: 0; /* 清除默认 body 的 margin */
+      padding: 0;
+      box-sizing: border-box;
+      color: #fff;
+    }
+    .container {
+      width: 80%;
+      margin: 1em auto;
+      /* font-family: 'Courier New', Courier, monospace; */
+      line-height: 2;
+      text-indent: 2em;
+      position: relative;
+    }
+    p {
+      margin: 0;
+    }
+    .eraser {
+      position: absolute;
+      inset: 0;
+    }
+    .text {
+      --p: 0%;
+      background: linear-gradient(
+        to right,
+        #0000 var(--p),
+        #000 calc(var(--p) + 30px)
+      );
+      animation: 5s linear erase forwards;
+      color: transparent;
+    }
+
+    @property --p {
+      syntax: '<percentage>';
+      initial-value: 0%;
+      inherits: false;
+    }
+    @keyframes erase {
+      to {
+        --p: 100%;
+      }
+    }
+  </style>
+</html>
