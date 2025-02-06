@@ -5,7 +5,7 @@ function createImgs() {
     let src = `https://picsum.photos/200/${Math.floor(Math.random() * 100) + 200
       }?random=${i}`
     let img = document.createElement('img')
-    img.onLoad = setPositions
+    img.onLoad = setPositions()
     img.src = src
     container.appendChild(img)
   }
