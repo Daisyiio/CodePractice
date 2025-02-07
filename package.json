@@ -1,0 +1,12 @@
+{
+  "name": "CodePractice",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "repository": "https://github.com/Daisyiio/CodePractice.git",
+  "author": "邹钰杰 <554091877@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.15"
+  }
+}
