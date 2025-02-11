@@ -51,3 +51,6 @@ function captureFrame(video, time = 0) {
         video.removeEventListener("seeked", capture);
     });
 }
+
+
+
