@@ -1,22 +1,22 @@
-function* walk(str){
+function* walk(str) {
   let part = ''
-  let terminals = ['.','-']
-  for(var i = 0 ;i<str.length;i++){
-    if(terminals.includes(str[i])){
+  let terminals = ['.', '-']
+  for (var i = 0; i < str.length; i++) {
+    if (terminals.includes(str[i])) {
       yield part
-      part= ''
-    }else{
+      part = ''
+    } else {
       part += str[i]
     }
   }
-  if(part){
+  if (part) {
     yield part
   }
 }
 
 let iterator = walk('1.5.6-alpha.1')
-for(const item  of iterator){
-  console.log(item,'item')
+for (const item of iterator) {
+  console.log(item, 'item')
 }
 
 
@@ -25,3 +25,6 @@ for(const item  of iterator){
 // 5.7.8
 // 1.5.6-alpha.1
 // 7.2.3-beta 
+
+
+
