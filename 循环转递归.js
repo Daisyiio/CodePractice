@@ -8,6 +8,7 @@ function sum(arr, i) {
 
 let all = sum(arr, 0)
 
+
 console.log(all, 'all')
 
 // for (初始代码; 条件代码; 循环代码) {
@@ -46,5 +47,28 @@ function m() {
   _m()
   console.log(res)
 }
-
 m()
+
+
+
+
+
+function m() {
+  let res = 0
+  let i = 0
+  function _m() {
+    if (i >= arr.length) {
+      return
+    }
+    res += arr[i]
+    i++
+    _m()
+  }
+  _m()
+  console.log(res)
+}
+
+
+
+
+

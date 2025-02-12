@@ -9,9 +9,9 @@
 
 
 class A {
-  abc() {}
+  abc() { }
 }
- new A()
+new A()
 //  A()
 const a = () => {
   console.log('a')
@@ -23,3 +23,5 @@ a()
 
 // a()
 // new a();
+
+

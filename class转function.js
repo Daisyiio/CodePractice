@@ -1,9 +1,9 @@
 class Example {
-  
-  constructor(name){
+
+  constructor(name) {
     this.name = name
   }
-  fnc (){
+  fnc() {
     console.log(this.name)
   }
 }
@@ -14,14 +14,14 @@ class Example {
 
 
 'use strict'  //严格模式
-function Example(name){
+function Example(name) {
   // if(!(this instanceof Example)){
   //   throw new TypeError(`Class constructor Example cannot be invoked without 'new' `)
   // }
   if (!(new.target)) {
     throw new TypeError("Example must be instantiated with 'new'");
   }
-  this.name= name
+  this.name = name
 }
 
 // Example.prototype.fnc =  function(){
@@ -32,17 +32,18 @@ function Example(name){
 // }
 
 
-Object.defineProperty(Example.prototype,'fnc',{
-  value:function(){
-     // if(!(this instanceof Example)){
-  //   throw new TypeError(`Class constructor Example cannot be invoked without 'new' `)
-  // }
+Object.defineProperty(Example.prototype, 'fnc', {
+  value: function () {
+    // if(!(this instanceof Example)){
+    //   throw new TypeError(`Class constructor Example cannot be invoked without 'new' `)
+    // }
     if (!(new.target)) {
       throw new TypeError("Example must be instantiated with 'new'");
     }
     console.log(this.name)
   },
-  writable:true,
-  configurable:true,
-  enumerable:false
+  writable: true,
+  configurable: true,
+  enumerable: false
 })
+
