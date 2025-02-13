@@ -1,7 +1,13 @@
 class Person {
-  constructor(public name: string, public age: number) {
+  // public name: string;
+  // public age: number;
+  // constructor(name: string, age: number) {
+  //   this.name = name;
+  //   this.age = age;
+  // }
+  //简写
+  constructor(public name: string, public age: number) { }
 
-  }
   getAge() {
     return this.age;
   }
@@ -15,6 +21,11 @@ class Person {
 class Student extends Person {
   constructor(name: string, age: number, public school: string) {
     super(name, age)
+    // 在子类的构造函数中，必须先调用 super()，然后才能使用 this。
+    // super(...) 用于调用父类的构造函数，并传递参数。
+    // super.方法名() 可用于调用父类的方法。
+    // super 只能在 class 继承（extends）时使用。
+    // 🚀 super 主要作用就是帮助子类调用和复用父类的构造函数和方法！
   }
   getSchool() {
     return this.school;
@@ -23,8 +34,6 @@ class Student extends Person {
 
 let p1 = new Person('张三', 18)
 p1.getDetail()
-
-
 
 
 
@@ -43,18 +52,16 @@ enum Status {
 }
 
 
-
+// 定义一个接口，规定 Person2 必须具备的属性和方法
 interface PersonInterface {
   name: string;
   age: number;
   speak(n: number): void
 }
 
-
+// 使用 implements 关键字，让 Person2 类符合 PersonInterface 规范
 class Person2 implements PersonInterface {
-  constructor(public name: string, public age: number) {
-
-  }
+  constructor(public name: string, public age: number) {}
   speak(n: number): void {
     console.log(n)
   }
@@ -95,6 +102,7 @@ const count: CountInterface = (a: number, b: number): number => {
 
 
 
+
 interface BaseUser {
   name: string,
   age: number
@@ -112,9 +120,7 @@ type PersonType = PersonInterfaceCf | {
 
 
 abstract class BaseUser {
-  constructor(public name: string, public age: number) {
-
-  }
+  constructor(public name: string, public age: number) {}
   abstract getDetail(): void
   getName() {
 

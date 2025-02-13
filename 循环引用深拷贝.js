@@ -15,7 +15,6 @@ obj.arr.push(obj)
 //       return cache.get(value)
 //     }
 //     const result =  Array.isArray(value) ? []:{};
-
 //     cache.set(value,result)
 //     for(const key in value){
 //       result[key] = _deepClone(value[key])
@@ -86,37 +85,53 @@ function deepClone(value) {
 
 
 
-function deepClone(value){
-  if(value ===null || typeof value !=='object')
-  {
-    return value 
+function deepClone(value) {
+  if (value === null || typeof value !== 'object') {
+    return value
   }
-  if(Array.isArray(value)){
+  if (Array.isArray(value)) {
     let clone = []
-    for(let i =0;i<value.length;i++){
+    for (let i = 0; i < value.length; i++) {
       clone[i] = deepClone(value[i])
     }
     return clone
   }
-  else if(typeof value ==='object'){
+  else if (typeof value === 'object') {
     let clone = {}
-    for(let key in value){
+    for (let key in value) {
       clone[key] = deepClone(value[key])
     }
-    return clone 
+    return clone
   }
-  
+
 }
 
 
 
-function deepClone(value){
-  if(value === null || typeof value !=='object'){
-    return value 
+function deepClone(value) {
+  if (value === null || typeof value !== 'object') {
+    return value
   }
-  let clone = Array.isArray(value)? [] :{}
-  for(let key in value ){
+  let clone = Array.isArray(value) ? [] : {}
+  for (let key in value) {
     clone[key] = deepClone(value[key])
   }
   return clone
+}
+
+
+
+
+
+
+
+function deepClone(value) {
+  if (value === null || typeof value !== 'object') {
+    return value
+  }
+  const res = Array.isArray(value) ? [] : {}
+  for (key in value) {
+    res[key] = deepClone(value[key])
+  }
+  return res
 }

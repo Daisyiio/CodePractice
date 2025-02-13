@@ -11,8 +11,8 @@ let [a, b] = {
 
 // ES6 生成器
 Object.prototype[Symbol.iterator] = function* () {
-    yield* Object.values(this)
-  }
+  yield* Object.values(this)
+}
 
 
 console.log(a, b) // 要让代码成立，需要让对象 `{ a: 3, b: 4 }` 可以被解构为数组形式 `[a, b]`。
