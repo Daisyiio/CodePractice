@@ -22,16 +22,17 @@ class MyPromise {
   }
 
   then(onFulfilled, onRejected) {
-    return new Promise((resolve, reject) => {
+    return new MyPromise((resolve, reject) => {
       //pending
-      this.#handlers.push(() => {
-        if (this.#state === FULFILLED) {
-          onFulfilled(this.#value)
-        } else if (this.#state === REJECTED) {
-          onRejected(this.#value)
-        }
-      })
-        this.#runTask()
+      try {
+        const cb = this.#state === FULFILLED ? onFulfilled : onRejected
+        const res = typeof cb === 'function' ? cb(this.#value) : this.#value
+        resolve(res)
+      } catch (error) {
+        reject(error)
+      }
+
+      this.#runTask()
     })
   }
   #runTask() {
