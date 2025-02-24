@@ -10,9 +10,11 @@ const audioSrc = audio.src
 const decodedSrc = decodeURIComponent(audioSrc)
 MusicName.innerHTML = decodedSrc.split('/').pop().split('.').shift()
 function PlayerStart() {}
-
 // 播放/暂停
 playPauseBtn.addEventListener('click', () => {
+  AudioPlayAndPause()
+})
+function AudioPlayAndPause() {
   if (audio.paused) {
     audio.play()
     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>'
@@ -20,7 +22,11 @@ playPauseBtn.addEventListener('click', () => {
     audio.pause()
     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>'
   }
-})
+}
+// 暴露播放控制函数
+window.toggleAudioPlayPause = function () {
+  AudioPlayAndPause()
+}
 
 // 静音/取消静音
 muteBtn.addEventListener('click', () => {
@@ -59,8 +65,32 @@ getMetaData()
 
 // 音量控制
 volumeControl.addEventListener('input', () => {
-  audio.volume = volumeControl.value
+  console.log(volumeControl.value, 'volumeControl.value')
+  audio.volume = parseFloat(volumeControl.value)
 })
+window.volumeUpAndDown = function (type) {
+  let addnumber = 10 / 100
+  let currentVolume = parseFloat(audio.volume) // 当前音量（0 到 1 范围）
+  console.log(currentVolume, 'currentVolume')
+  switch (type) {
+    case 'down':
+      if (currentVolume - addnumber < 0) {
+        audio.volume = 0
+      } else {
+        audio.volume = currentVolume - addnumber
+        console.log(audio.volume)
+      }
+      break
+    case 'up':
+      if (currentVolume + addnumber > 1) {
+        audio.volume = 1
+      } else {
+        audio.volume = currentVolume + addnumber
+        console.log(audio.volume)
+      }
+      break
+  }
+}
 
 // 格式化时间
 function formatTime(time) {
