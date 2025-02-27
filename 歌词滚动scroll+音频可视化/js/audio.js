@@ -8,8 +8,8 @@ function initCvs() {
   // 设置画布的宽度和高度，乘以devicePixelRatio来确保高DPI设备的显示效果
   cvs.width = window.innerWidth * devicePixelRatio
   cvs.height = (window.innerHeight / 2) * devicePixelRatio
-  console.log(window.innerWidth, window.innerHeight) // 输出窗口的宽高，帮助调试
-}
+  console.log(window.innerWidth, window.innerHeight)
+} 
 
 // 初始化画布
 initCvs()

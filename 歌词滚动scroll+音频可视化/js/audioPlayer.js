@@ -30,11 +30,20 @@ window.toggleAudioPlayPause = function () {
 
 // 静音/取消静音
 muteBtn.addEventListener('click', () => {
-  audio.muted = !audio.muted
-  muteBtn.innerHTML = audio.muted
-    ? '<i class="fas fa-volume-mute"></i>'
-    : '<i class="fas fa-volume-up"></i>'
+  setAudioMuted(!audio.muted)
 })
+
+function setAudioMuted(muted) {
+  if (muted) {
+    audio.muted = true
+    volumeControl.value = 0
+    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>'
+  } else {
+    audio.muted = false
+    volumeControl.value = audio.volume
+    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>'
+  }
+}
 
 // 更新进度条
 audio.addEventListener('timeupdate', () => {
@@ -52,11 +61,27 @@ progress.addEventListener('input', () => {
   })
 })
 
+//暴露到全局 给keyboard.js 调用
+window.setDurationUpAndDown = function (type, seconds = 1) {
+  switch (type) {
+    case 'right':
+      if (audio.currentTime + 1 <= audio.duration) {
+        audio.currentTime = audio.currentTime + seconds
+        progress.value = audio.currentTime / audio.duration // 更新进度条
+      }
+      break
+    case 'left':
+      if (audio.currentTime - 1 >= 0) {
+        audio.currentTime = audio.currentTime - seconds
+        progress.value = audio.currentTime / audio.duration // 更新进度条
+      }
+      break
+  }
+}
+
 // 更新总时长
 audio.addEventListener('loadedmetadata', () => {
-  console.log(formatTime(audio.duration), '更新总时长')
   getMetaData()
-  // totalTimeDisplay.textContent = formatTime(audio.duration)
 })
 function getMetaData() {
   totalTimeDisplay.textContent = formatTime(audio.duration)
@@ -65,28 +90,35 @@ getMetaData()
 
 // 音量控制
 volumeControl.addEventListener('input', () => {
-  console.log(volumeControl.value, 'volumeControl.value')
   audio.volume = parseFloat(volumeControl.value)
+  setAudioMuted(false)
 })
-window.volumeUpAndDown = function (type) {
-  let addnumber = 10 / 100
+
+//暴露到全局 给keyboard.js 调用
+window.volumeUpAndDown = function (type, volume = 10) {
+  let addnumber = volume / 100
   let currentVolume = parseFloat(audio.volume) // 当前音量（0 到 1 范围）
-  console.log(currentVolume, 'currentVolume')
   switch (type) {
     case 'down':
-      if (currentVolume - addnumber < 0) {
+      if ((currentVolume - addnumber).toFixed(1) <= 0) {
         audio.volume = 0
+        volumeControl.value = audio.volume
+        setAudioMuted(true)
       } else {
-        audio.volume = currentVolume - addnumber
-        console.log(audio.volume)
+        audio.volume = (currentVolume - addnumber).toFixed(1)
+        volumeControl.value = audio.volume
+        setAudioMuted(false)
       }
       break
     case 'up':
-      if (currentVolume + addnumber > 1) {
+      if ((currentVolume + addnumber).toFixed(1) >= 1) {
         audio.volume = 1
+        volumeControl.value = audio.volume
+        setAudioMuted(false)
       } else {
-        audio.volume = currentVolume + addnumber
-        console.log(audio.volume)
+        audio.volume = (currentVolume + addnumber).toFixed(1)
+        volumeControl.value = audio.volume
+        setAudioMuted(false)
       }
       break
   }
