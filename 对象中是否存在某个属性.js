@@ -16,3 +16,6 @@ function hasProperty(obj, key) {
 //     enumerable:false,  //是否可被遍历到
 //     value:1
 // })
+
+
+

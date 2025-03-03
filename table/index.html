@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>深色 / 亮色模式切换</title>
+    <style>
+      /* 定义主题变量 */
+      :root {
+        --bg-color: #ffffff;
+        --text-color: #333;
+        --table-bg: #f8f8f8;
+        --table-border: #ccc;
+        --hover-bg: rgba(0, 0, 0, 0.1);
+        --button-bg: #ddd;
+        --button-border: #bbb;
+      }
+
+      [data-theme='dark'] {
+        --bg-color: #1e1e1e;
+        --text-color: #dcdcdc;
+        --table-bg: #2b2b2b;
+        --table-border: #444;
+        --hover-bg: rgba(255, 255, 255, 0.1);
+        --button-bg: #333;
+        --button-border: #555;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      input {
+        background-color: var(--table-bg);
+        color: var(--text-color);
+        border: 1px solid var(--table-border);
+        padding: 8px;
+        margin-bottom: 10px;
+        width: 80%;
+      }
+      table {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: var(--table-bg);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid var(--table-border);
+      }
+      th {
+        background-color: var(--button-bg);
+        cursor: pointer;
+        min-width: 100px;
+        position: relative;
+      }
+      th:hover {
+        background-color: var(--hover-bg);
+      }
+      th span {
+        display: inline-block;
+        width: 15px;
+        text-align: center;
+        font-size: 14px;
+        transition: transform 0.2s;
+      }
+      tbody tr:hover {
+        background-color: var(--hover-bg);
+      }
+      .pagination {
+        margin-top: 10px;
+      }
+      .pagination button,
+      .theme-toggle {
+        background-color: var(--button-bg);
+        color: var(--text-color);
+        border: 1px solid var(--button-border);
+        padding: 8px 12px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .pagination button:hover,
+      .theme-toggle:hover {
+        background-color: var(--hover-bg);
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" onclick="toggleTheme()">切换主题</button>
+
+    <!-- 搜索框 -->
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="输入关键字搜索..."
+      onkeyup="updateTable()"
+    />
+
+    <!-- 表格 -->
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0, true)">姓名<span>▼</span></th>
+          <th onclick="sortTable(1, true)">年龄<span></span></th>
+          <th onclick="sortTable(2, true)">城市<span></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>张三</td>
+          <td>25</td>
+          <td>北京</td>
+        </tr>
+        <tr>
+          <td>李四</td>
+          <td>30</td>
+          <td>上海</td>
+        </tr>
+        <tr>
+          <td>王五</td>
+          <td>22</td>
+          <td>广州</td>
+        </tr>
+        <tr>
+          <td>赵六</td>
+          <td>28</td>
+          <td>深圳</td>
+        </tr>
+        <tr>
+          <td>孙七</td>
+          <td>35</td>
+          <td>杭州</td>
+        </tr>
+        <tr>
+          <td>周八</td>
+          <td>29</td>
+          <td>成都</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="pagination">
+      <button onclick="changePage(-1)">上一页</button>
+      <span id="pageInfo"></span>
+      <button onclick="changePage(1)">下一页</button>
+    </div>
+
+    <script>
+      let currentPage = 1
+      const rowsPerPage = 3
+      let currentOrder = { 0: 'desc' }
+
+      function updateTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase()
+        const rows = document.querySelectorAll('#dataTable tbody tr')
+
+        rows.forEach((row) => {
+          const text = row.innerText.toLowerCase()
+          row.style.display = text.includes(input) ? '' : 'none'
+        })
+
+        showPage(1)
+      }
+
+      function sortTable(columnIndex, toggle = true) {
+        const table = document.getElementById('dataTable')
+        const rows = Array.from(table.rows).slice(1)
+        const headers = document.querySelectorAll('th span')
+
+        if (toggle) {
+          currentOrder[columnIndex] =
+            currentOrder[columnIndex] === 'asc' ? 'desc' : 'asc'
+        }
+
+        const isAscending = currentOrder[columnIndex] === 'asc'
+        headers.forEach((span) => (span.innerText = ''))
+        headers[columnIndex].innerText = isAscending ? '▲' : '▼'
+
+        rows.sort((rowA, rowB) => {
+          let a = rowA.cells[columnIndex].innerText
+          let b = rowB.cells[columnIndex].innerText
+          return isAscending
+            ? a.localeCompare(b, 'zh')
+            : b.localeCompare(a, 'zh')
+        })
+
+        rows.forEach((row) => table.appendChild(row))
+        showPage(1)
+      }
+
+      function showPage(page) {
+        const table = document.getElementById('dataTable')
+        const rows = Array.from(table.querySelectorAll('tbody tr')).filter(
+          (row) => row.style.display !== 'none'
+        )
+        const totalPages = Math.ceil(rows.length / rowsPerPage)
+
+        if (page < 1) page = 1
+        if (page > totalPages) page = totalPages
+
+        rows.forEach((row, index) => {
+          row.style.display =
+            index >= (page - 1) * rowsPerPage && index < page * rowsPerPage
+              ? ''
+              : 'none'
+        })
+
+        document.getElementById(
+          'pageInfo'
+        ).innerText = `第 ${page} 页 / 共 ${totalPages} 页`
+        currentPage = page
+      }
+
+      function changePage(direction) {
+        showPage(currentPage + direction)
+      }
+
+      function toggleTheme() {
+        const body = document.body
+        const currentTheme = body.getAttribute('data-theme')
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+        body.setAttribute('data-theme', newTheme)
+        localStorage.setItem('theme', newTheme)
+      }
+
+      window.onload = function () {
+        const savedTheme = localStorage.getItem('theme') || 'dark'
+        document.body.setAttribute('data-theme', savedTheme)
+        sortTable(0, false)
+      }
+    </script>
+  </body>
+</html>

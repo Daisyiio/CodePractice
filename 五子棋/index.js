@@ -9,6 +9,7 @@ function switchPlayer() {
 
 // 检查是否落子
 canvas.addEventListener('click', (e) => {
+  console.log(e,'eeeee')
   if (isGameOver) return;
 
   const rect = canvas.getBoundingClientRect();
@@ -23,7 +24,7 @@ canvas.addEventListener('click', (e) => {
 
   // 在棋盘上放置棋子
   board[row][col] = currentPlayer;
-  drawPiece(row, col, currentPlayer === 'black' ? 'black' : 'white');
+  drawPiece(row, col, currentPlayer);
 
   // 判断胜负
   if (checkWin(row, col)) {
@@ -31,7 +32,7 @@ canvas.addEventListener('click', (e) => {
     isGameOver = true;
     return;
   }
-
+  console.log(board,'board')
   // 切换玩家
   switchPlayer();
 });
@@ -78,3 +79,4 @@ function checkWin(row, col) {
 
   return false;
 }
+

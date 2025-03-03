@@ -7,6 +7,9 @@
   "author": "邹钰杰 <554091877@qq.com>",
   "license": "MIT",
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.15"
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
   }
 }
