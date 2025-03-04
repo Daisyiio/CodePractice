@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
   socket.on('makeMove', (move) => {
     const { x, y, player } = move;
 
-    // 如果是轮到当前玩家
+    // 如果是轮到当前玩家dee
     if (player !== currentPlayer) return;
 
     // 更新棋盘
