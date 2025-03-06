@@ -1,100 +1,105 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>流星雨特效</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: black;
-        }
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-        }
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <canvas id="meteorCanvas"></canvas>
 
     <script>
-        class Meteor {
-            constructor(canvasWidth, canvasHeight) {
-                this.x = Math.random() * canvasWidth;
-                this.y = Math.random() * -canvasHeight; // 初始位置在屏幕外
-                this.length = Math.random() * 80 + 50; // 流星长度
-                this.speed = Math.random() * 4 + 2; // 下落速度
-                this.opacity = Math.random() * 0.5 + 0.5; // 透明度
-                this.angle = Math.random() * 20 + 240; // 让流星倾斜
-            }
-
-            update() {
-                this.x += Math.cos(this.angle * Math.PI / 180) * this.speed;
-                this.y += Math.sin(this.angle * Math.PI / 180) * this.speed;
-                this.opacity -= 0.005; // 逐渐消失
-            }
-
-            draw(ctx) {
-                ctx.globalAlpha = this.opacity;
-                const grad = ctx.createLinearGradient(this.x, this.y, this.x - this.length, this.y + this.length);
-                grad.addColorStop(0, "rgba(255, 255, 255, 1)");
-                grad.addColorStop(1, "rgba(255, 255, 255, 0)");
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x - this.length, this.y + this.length);
-                ctx.stroke();
-                ctx.globalAlpha = 1;
-            }
-
-            isOutOfBounds(canvasWidth, canvasHeight) {
-                return this.y > canvasHeight || this.opacity <= 0;
-            }
+      class Meteor {
+        constructor(canvasWidth, canvasHeight) {
+          this.x = Math.random() * canvasWidth
+          this.y = Math.random() * -canvasHeight // 初始位置在屏幕外
+          this.length = Math.random() * 80 + 50 // 流星长度
+          this.speed = Math.random() * 4 + 2 // 下落速度
+          this.opacity = Math.random() * 0.5 + 0.5 // 透明度
+          this.angle = Math.random() * 20 + 240 // 让流星倾斜
         }
 
-        class MeteorShower {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext("2d");
-                this.meteors = [];
-                this.resize();
-                window.addEventListener("resize", () => this.resize());
-                this.animate();
-            }
-
-            resize() {
-                this.canvas.width = window.innerWidth;
-                this.canvas.height = window.innerHeight;
-            }
-
-            createMeteor() {
-                this.meteors.push(new Meteor(this.canvas.width, this.canvas.height));
-            }
-
-            animate() {
-                requestAnimationFrame(() => this.animate());
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                if (Math.random() < 0.2) this.createMeteor(); // 随机生成流星
-
-                this.meteors.forEach((meteor, index) => {
-                    meteor.update();
-                    meteor.draw(this.ctx);
-                    if (meteor.isOutOfBounds(this.canvas.width, this.canvas.height)) {
-                        this.meteors.splice(index, 1);
-                    }
-                });
-            }
+        update() {
+          this.x += Math.cos((this.angle * Math.PI) / 180) * this.speed
+          this.y += Math.sin((this.angle * Math.PI) / 180) * this.speed
+          this.opacity -= 0.005 // 逐渐消失
         }
 
-        new MeteorShower(document.getElementById("meteorCanvas"));
+        draw(ctx) {
+          ctx.globalAlpha = this.opacity
+          const grad = ctx.createLinearGradient(
+            this.x,
+            this.y,
+            this.x - this.length,
+            this.y + this.length
+          )
+          grad.addColorStop(0, 'rgba(255, 255, 255, 1)')
+          grad.addColorStop(1, 'rgba(255, 255, 255, 0)')
+          ctx.strokeStyle = grad
+          ctx.lineWidth = 2
+          ctx.beginPath()
+          ctx.moveTo(this.x, this.y)
+          ctx.lineTo(this.x - this.length, this.y + this.length)
+          ctx.stroke()
+          ctx.globalAlpha = 1
+        }
+
+        isOutOfBounds(canvasWidth, canvasHeight) {
+          return this.y > canvasHeight || this.opacity <= 0
+        }
+      }
+
+      class MeteorShower {
+        constructor(canvas) {
+          this.canvas = canvas
+          this.ctx = canvas.getContext('2d')
+          this.meteors = []
+          this.resize()
+          window.addEventListener('resize', () => this.resize())
+          this.animate()
+        }
+
+        resize() {
+          this.canvas.width = window.innerWidth
+          this.canvas.height = window.innerHeight
+        }
+
+        createMeteor() {
+          this.meteors.push(new Meteor(this.canvas.width, this.canvas.height))
+        }
+
+        animate() {
+          requestAnimationFrame(() => this.animate())
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+          if (Math.random() < 0.2) this.createMeteor() // 随机生成流星
+
+          this.meteors.forEach((meteor, index) => {
+            meteor.update()
+            meteor.draw(this.ctx)
+            if (meteor.isOutOfBounds(this.canvas.width, this.canvas.height)) {
+              this.meteors.splice(index, 1)
+            }
+          })
+        }
+      }
+
+      new MeteorShower(document.getElementById('meteorCanvas'))
     </script>
-</body>
+  </body>
 </html>
