@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>流体波纹涟漪</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="rippleCanvas"></canvas>
+
+    <script>
+      class Ripple {
+        constructor(x, y, color) {
+          this.x = x
+          this.y = y
+          this.radius = 0
+          this.maxRadius = Math.random() * 50 + 80
+          this.alpha = 1
+          this.color = color
+        }
+
+        update() {
+          this.radius += 2
+          this.alpha *= 0.96 // 让 alpha 逐步减少（比线性减少更平滑）
+        }
+
+        draw(ctx) {
+          if (this.alpha <= 0.02) return // 避免最后一帧闪烁
+          ctx.globalAlpha = this.alpha
+          ctx.strokeStyle = this.color
+          ctx.lineWidth = 3
+          ctx.beginPath()
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
+          ctx.stroke()
+          ctx.globalAlpha = 1
+        }
+      }
+
+      class RippleEffect {
+        constructor(canvas) {
+          this.canvas = canvas
+          this.ctx = canvas.getContext('2d')
+          this.ripples = []
+          this.resize()
+          window.addEventListener('resize', () => this.resize())
+          window.addEventListener('click', (e) =>
+            this.createRipple(e.clientX, e.clientY)
+          )   
+           window.addEventListener('mousemove', (e) =>
+            this.createRipple(e.clientX, e.clientY)
+          )
+          this.animate()
+        }
+
+        resize() {
+          this.canvas.width = window.innerWidth
+          this.canvas.height = window.innerHeight
+        }
+
+        createRipple(x, y) {
+          const color = `hsl(${Math.random() * 360}, 100%, 70%)`
+          this.ripples.push(new Ripple(x, y, color))
+        }
+
+        animate() {
+          requestAnimationFrame(() => this.animate())
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+          this.ripples = this.ripples.filter((ripple) => ripple.alpha > 0.02) // 彻底移除消失的波纹
+          this.ripples.forEach((ripple) => {
+            ripple.update()
+            ripple.draw(this.ctx)
+          })
+        }
+      }
+
+      new RippleEffect(document.getElementById('rippleCanvas'))
+    </script>
+  </body>
+</html>
