@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapbox 地图初始化</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+        position: absolute;
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 地图容器 -->
+    <div id="map"></div>
+    <div class="controls">
+      <!-- 画布控制面板 -->
+      颜色: <input type="color" id="colorPicker" /> 画笔大小:
+      <input type="range" id="sizePicker" min="1" max="10" value="5" />
+      <button id="clearBtn">清除画布</button>
+      <p>按住 <b>Shift</b> 进入绘画模式</p>
+    </div>
+    <script>
+      // 设置 Mapbox 访问 Token（你提供的 Token）
+      mapboxgl.accessToken =
+        'pk.eyJ1IjoieXVuZXI5OTY4IiwiYSI6ImNrazY1cTh1bzAwc24yd3AyMzBnbmtiMXYifQ.KmABHgQ1OZ4EVax3poOzyA'
+
+      // 初始化 Mapbox 地图
+      const map = new mapboxgl.Map({
+        container: 'map', // 地图容器
+        style: 'mapbox://styles/mapbox/streets-v11', // 使用的地图样式
+        center: [116.397128, 39.916527], // 北京天安门的经纬度
+        zoom: 12, // 初始缩放级别
+      })
+
+      let lastX = map.transform.point.x
+      let lastY = map.transform.point.y
+      map.on('move', () => {
+        const currentX = map.transform.point.x
+        const currentY = map.transform.point.y
+        const dx = currentX - lastX // X 方向像素偏移
+        const dy = currentY - lastY // Y 方向像素偏移
+        pathList = pathList.map((item) => {
+          return item.map((e) => {
+            return [e[0] - dx, e[1] - dy]
+          })
+        })
+
+        lastX = currentX // 更新上一次的坐标
+        lastY = currentY
+
+        // 根据地图的偏移量来调整 canvas 的位置
+      })
+    </script>
+
+    <script>
+      // 添加 Canvas 画布
+      const canvas = document.createElement('canvas')
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      canvas.style.position = 'absolute'
+      canvas.style.top = '0'
+      canvas.style.left = '0'
+      canvas.style.pointerEvents = 'none' // 允许地图交互
+      document.body.appendChild(canvas)
+
+      const ctx = canvas.getContext('2d')
+      let drawing = false
+      let color = '#000000'
+      let lineWidth = 5
+      let shiftPressed = false // 是否按住 Shift
+
+      // 监听颜色和画笔大小变化
+      document.getElementById('colorPicker').addEventListener('input', (e) => {
+        color = e.target.value
+      })
+
+      document.getElementById('sizePicker').addEventListener('input', (e) => {
+        lineWidth = e.target.value
+      })
+
+      // 监听 Shift 键，进入/退出绘画模式
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'd' && !shiftPressed) {
+          shiftPressed = true
+          canvas.style.pointerEvents = 'auto' // 开启绘画
+          map.dragPan.disable() // 禁止地图拖动
+          map.scrollZoom.disable() // 禁止地图缩放
+        }
+      })
+
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'd') {
+          shiftPressed = false
+          canvas.style.pointerEvents = 'none' // 允许地图交互
+          map.dragPan.enable() // 确保地图可以拖拽
+          map.scrollZoom.enable() // 确保地图可以缩放
+        }
+      })
+
+      // 画布绘制逻辑
+      let pathList = []
+      let currentPath = []
+      let currentSimplified = []
+      canvas.addEventListener('mousedown', (e) => {
+        if (!shiftPressed) return // 只有按住 Shift 才能绘画
+        drawing = true
+        ctx.beginPath()
+        ctx.moveTo(e.clientX, e.clientY)
+      })
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!drawing || !shiftPressed) return
+        currentPath.push([e.clientX, e.clientY]) // 存储每个点
+        currentSimplified = simplifyPath(currentPath, 1.0, 2) // 简化路径
+        // ctx.lineTo(e.clientX, e.clientY)
+        // ctx.strokeStyle = color
+        // ctx.lineWidth = lineWidth
+        // ctx.lineCap = 'round'
+        // ctx.stroke()
+
+      })
+
+      canvas.addEventListener('mouseup', () => {
+        drawing = false
+        pathList.push(currentSimplified)
+        currentSimplified = []
+        currentPath = []
+        ctx.closePath()
+      })
+
+      function updateDraw() {
+        requestAnimationFrame(updateDraw)
+        ctx.clearRect(0, 0, canvas.width, canvas.height) // 清除旧路径
+        ctx.beginPath()
+        pathList.forEach((item, index) => {
+          item.forEach((e, index2) => {
+            if (index2 === 0) {
+              ctx.moveTo(e[0], e[1]) // 路径起点
+            } else {
+              ctx.lineTo(e[0], e[1]) // 连接点
+            }
+          })
+        })
+        ctx.strokeStyle = color
+        ctx.lineWidth = lineWidth
+        ctx.lineCap = 'round'
+        ctx.stroke()
+      }
+
+      updateDraw()
+
+      // 清除画布
+      document.getElementById('clearBtn').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        pathList = []
+        simplified = []
+      })
+
+      // 确保窗口大小变化时，画布调整尺寸
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+      })
+
+      // **初始化时，确保地图拖拽和缩放是启用的**
+      map.on('load', () => {
+        map.dragPan.enable()
+        map.scrollZoom.enable()
+      })
+
+      function simplifyPath(points, epsilon = 1.0, step = 2) {
+        if (points.length < 3) return points // 低于3个点无法简化
+
+        // 1️⃣ 去重（只去掉完全重复的点，不影响相邻相同点）
+        let uniquePoints = [points[0]] // 保留第一个点
+        for (let i = 1; i < points.length; i++) {
+          let prev = uniquePoints[uniquePoints.length - 1]
+          let current = points[i]
+          if (prev[0] !== current[0] || prev[1] !== current[1]) {
+            uniquePoints.push(current) // 只添加与前一个不同的点
+          }
+        }
+
+        // 2️⃣ 降采样（每 step 个点取一个）
+        let sampledPoints = uniquePoints.filter(
+          (_, index) => index % step === 0
+        )
+
+        // 3️⃣ Douglas-Peucker 递归算法（简化曲线）
+        function douglasPeucker(points, epsilon) {
+          let dmax = 0
+          let index = 0
+          const end = points.length - 1
+
+          for (let i = 1; i < end; i++) {
+            let d = perpendicularDistance(points[i], points[0], points[end])
+            if (d > dmax) {
+              index = i
+              dmax = d
+            }
+          }
+
+          if (dmax > epsilon) {
+            let rec1 = douglasPeucker(points.slice(0, index + 1), epsilon)
+            let rec2 = douglasPeucker(points.slice(index, end + 1), epsilon)
+            return rec1.slice(0, -1).concat(rec2)
+          } else {
+            return [points[0], points[end]]
+          }
+        }
+
+        // 计算点到直线的垂直距离
+        function perpendicularDistance(point, lineStart, lineEnd) {
+          let [x, y] = point
+          let [x1, y1] = lineStart
+          let [x2, y2] = lineEnd
+
+          let num = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1)
+          let den = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2)
+          return num / den
+        }
+
+        // 返回经过简化和降采样后的路径
+        return douglasPeucker(sampledPoints, epsilon)
+      }
+    </script>
+  </body>
+</html>
