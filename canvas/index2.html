@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas 炫酷动画</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        /* background: black; */
+      }
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+      #backgroundCanvas {
+        z-index: 1;
+      }
+      #trailCanvas {
+        z-index: 2;
+        pointer-events: none;
+      }
+      #glowingTextCanvas {
+        z-index: 3;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="backgroundCanvas"></canvas>
+    <canvas id="trailCanvas"></canvas>
+    <script type="text/javascript">
+      // Adds in the FPS graph to the top of the page.
+      ;(function () {
+        var script = document.createElement('script')
+        script.onload = function () {
+          var stats = new Stats()
+          stats.domElement.style.cssText =
+            'position:fixed;left: 0px;top:0;z-index:10000'
+          document.body.appendChild(stats.domElement)
+          requestAnimationFrame(function loop() {
+            stats.update()
+            requestAnimationFrame(loop)
+          })
+        }
+        script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'
+        document.head.appendChild(script)
+      })()
+    </script>
+    <script>
+      // ========== 动态渐变背景 ==========
+      class Background {
+        constructor(canvas) {
+          this.canvas = canvas
+          this.ctx = canvas.getContext('2d')
+          this.time = 0
+          this.resize()
+          window.addEventListener('resize', () => this.resize())
+          this.animate()
+        }
+
+        resize() {
+          this.canvas.width = window.innerWidth
+          this.canvas.height = window.innerHeight
+        }
+
+        drawBackground() {
+          const { ctx, canvas, time } = this
+          const color1 = `hsl(${(time * 10) % 360}, 50%, 40%)`
+          const color2 = `hsl(${(time * 10 + 120) % 360}, 50%, 40%)`
+          const gradient = ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          )
+          gradient.addColorStop(0, color1)
+          gradient.addColorStop(1, color2)
+
+          ctx.fillStyle = gradient
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
+        animate() {
+          this.time += 0.05 // 速度调整，确保视觉上能看到变色
+          this.drawBackground()
+          requestAnimationFrame(() => this.animate())
+        }
+      }
+
+      new Background(document.getElementById('backgroundCanvas'))
+
+      // ========== 鼠标流光粒子 ==========
+      class TrailParticle {
+        constructor(ctx, x, y, color) {
+          this.ctx = ctx
+          this.x = x
+          this.y = y
+          this.size = Math.random() * 6 + 2
+          this.alpha = 1
+          this.speedX = (Math.random() - 0.5) * 2
+          this.speedY = (Math.random() - 0.5) * 2
+          this.color = color
+        }
+
+        update() {
+          this.x += this.speedX
+          this.y += this.speedY
+          this.alpha -= 0.02
+        }
+
+        draw() {
+          this.ctx.globalAlpha = this.alpha
+          this.ctx.fillStyle = this.color
+          this.ctx.beginPath()
+          this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
+          this.ctx.fill()
+          this.ctx.globalAlpha = 1
+        }
+      }
+
+      class MouseTrail {
+        constructor(canvas) {
+          this.canvas = canvas
+          this.ctx = canvas.getContext('2d')
+          this.particles = []
+          this.resize()
+          window.addEventListener('resize', () => this.resize())
+          window.addEventListener('mousemove', (e) =>
+            this.addParticle(e.clientX, e.clientY)
+          )
+          this.animate()
+        }
+
+        resize() {
+          this.canvas.width = window.innerWidth
+          this.canvas.height = window.innerHeight
+        }
+
+        addParticle(x, y) {
+          const color = `hsl(${Math.random() * 360}, 100%, 50%)`
+          this.particles.push(new TrailParticle(this.ctx, x, y, color))
+        }
+
+        animate() {
+          requestAnimationFrame(() => this.animate())
+          this.ctx.fillStyle = 'rgba(0, 0, 0, 0)'
+          // this.ctx.fillStyle = "transparent";
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          this.particles.forEach((particle, index) => {
+            particle.update()
+            particle.draw()
+            if (particle.alpha <= 0) this.particles.shift()
+          })
+        }
+      }
+
+      new MouseTrail(document.getElementById('trailCanvas'))
+    </script>
+  </body>
+</html>

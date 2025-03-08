@@ -19,12 +19,8 @@ for (const item of iterator) {
   console.log(item, 'item')
 }
 
-
 //语义版本规范 :X.Y.Z[-P]
 // 12.3.1
 // 5.7.8
 // 1.5.6-alpha.1
-// 7.2.3-beta 
-
-
-
+// 7.2.3-beta

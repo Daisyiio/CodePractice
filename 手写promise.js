@@ -35,6 +35,9 @@ class MyPromise {
       this.#runTask()
     })
   }
+  catch(onRejected) {
+    return this.then(undefined, onRejected)
+  }
   #runTask() {
     if (this.#state !== PENDING) {
       this.#handlers.forEach((cb) => cb())

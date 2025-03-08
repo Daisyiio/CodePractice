@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五子棋 - 在线对战</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="600" height="600"></canvas>
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const socket = io('http://localhost:3000');  // 连接到后端 WebSocket 服务器
+    const boardSize = 15;  // 15x15 的棋盘
+    const cellSize = canvas.width / boardSize; // 每个棋盘格子的大小
+
+    let currentPlayer = 'X';  // 当前玩家（'X' 或 'O'）
+    let board = Array.from({ length: boardSize }, () => Array(boardSize).fill(null));
+
+    // 监听鼠标点击事件
+    canvas.addEventListener('click', (e) => {
+      const x = Math.floor((e.clientX - canvas.offsetLeft) / cellSize);
+      const y = Math.floor((e.clientY - canvas.offsetTop) / cellSize);
+
+      // 如果该位置已经有棋子，忽略
+      if (board[x][y] !== null) return;
+
+      // 发送当前棋步到服务器
+      socket.emit('makeMove', { x, y, player: currentPlayer });
+
+      // 更新本地棋盘
+      board[x][y] = currentPlayer;
+
+      // 检查是否胜利
+      if (checkWin(x, y, currentPlayer)) {
+        alert(`${currentPlayer} wins!`);
+      }
+
+      // 切换玩家
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+      // 绘制棋盘和棋子
+      drawBoard();
+      drawPieces();
+    });
+
+    // 绘制棋盘
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "#000";
+      for (let i = 0; i < boardSize; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * cellSize, 0);
+        ctx.lineTo(i * cellSize, canvas.height);
+        ctx.moveTo(0, i * cellSize);
+        ctx.lineTo(canvas.width, i * cellSize);
+        ctx.stroke();
+      }
+    }
+
+    // 绘制棋子
+    function drawPieces() {
+      for (let x = 0; x < boardSize; x++) {
+        for (let y = 0; y < boardSize; y++) {
+          if (board[x][y] !== null) {
+            ctx.beginPath();
+            ctx.arc(x * cellSize + cellSize / 2, y * cellSize + cellSize / 2, cellSize / 3, 0, 2 * Math.PI);
+            ctx.fillStyle = board[x][y] === 'X' ? 'black' : 'white';
+            ctx.fill();
+          }
+        }
+      }
+    }
+
+    // 检查是否获胜
+    function checkWin(x, y, player) {
+      const directions = [
+        { x: 1, y: 0 },  // 水平
+        { x: 0, y: 1 },  // 垂直
+        { x: 1, y: 1 },  // 主对角线
+        { x: 1, y: -1 }, // 副对角线
+      ];
+
+      for (const dir of directions) {
+        let count = 1;
+
+        // 向一个方向延伸
+        for (let i = 1; i < 5; i++) {
+          const nx = x + dir.x * i;
+          const ny = y + dir.y * i;
+          if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
+            count++;
+          } else {
+            break;
+          }
+        }
+
+        // 向另一个方向延伸
+        for (let i = 1; i < 5; i++) {
+          const nx = x - dir.x * i;
+          const ny = y - dir.y * i;
+          if (nx >= 0 && nx < boardSize && ny >= 0 && ny < boardSize && board[nx][ny] === player) {
+            count++;
+          } else {
+            break;
+          }
+        }
+
+        // 判断是否有5颗连续的棋子
+        if (count >= 5) return true;
+      }
+
+      return false;
+    }
+
+    // 接收服务器广播的棋步
+    socket.on('updateBoard', (data) => {
+      const { x, y, player } = data;
+      board[x][y] = player;
+
+      // 切换玩家
+      currentPlayer = player === 'X' ? 'O' : 'X';
+
+      // 更新棋盘
+      drawBoard();
+      drawPieces();
+    });
+
+    // 初始化棋盘
+    drawBoard();
+  </script>
+</body>
+</html>
