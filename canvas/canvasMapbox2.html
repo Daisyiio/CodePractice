@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapbox 地图绘图</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    #map {
+      width: 100%;
+      height: 100vh;
+      position: absolute;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <canvas id="drawingCanvas"></canvas>
+  <div class="controls">
+    颜色: <input type="color" id="colorPicker">
+    画笔大小: <input type="range" id="sizePicker" min="1" max="10" value="5">
+    <button id="clearBtn">清除画布</button>
+    <button id="exportImgBtn">导出图片</button>
+    <br>
+    <button id="undoBtn">撤回</button>
+    <button id="redoBtn">下一步</button>
+    <p>按住 <b>D</b> 进入绘画模式</p>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoieXVuZXI5OTY4IiwiYSI6ImNrazY1cTh1bzAwc24yd3AyMzBnbmtiMXYifQ.KmABHgQ1OZ4EVax3poOzyA';
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [116.397128, 39.916527], // 北京天安门
+      zoom: 12,
+      preserveDrawingBuffer: true
+    });
+
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let drawing = false;
+    let color = '#000000';
+    let lineWidth = 5;
+    let shiftPressed = false;
+    let pathList = []; // 存储绘制的路径
+    let currentPath = [];
+    let undoStack = [];
+    let redoStack = [];
+
+    function resizeCanvas() {
+      const mapCanvas = map.getCanvas();
+      canvas.width = mapCanvas.width;
+      canvas.height = mapCanvas.height;
+      updateDraw();
+    }
+
+    document.getElementById('colorPicker').addEventListener('input', (e) => color = e.target.value);
+    document.getElementById('sizePicker').addEventListener('input', (e) => lineWidth = e.target.value);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'd' && !shiftPressed) {
+        shiftPressed = true;
+        canvas.style.pointerEvents = 'auto';
+        map.dragPan.disable();
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'd') {
+        shiftPressed = false;
+        canvas.style.pointerEvents = 'none';
+        map.dragPan.enable();
+      }
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (!shiftPressed) return;
+      drawing = true;
+      currentPath = [];
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing || !shiftPressed) return;
+      const lngLat = map.unproject([e.clientX, e.clientY]);
+      currentPath.push(lngLat);
+      updateDraw();
+    });
+
+    canvas.addEventListener('mouseup', () => {
+      if (currentPath.length) {
+        pathList.push([...currentPath]);
+        undoStack.push([...currentPath]);
+        redoStack = [];
+      }
+      drawing = false;
+    });
+
+    function updateDraw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scale = Math.pow(2, map.getZoom() - 12);
+      const center = map.project(map.getCenter());
+      ctx.setTransform(scale, 0, 0, scale, -center.x * scale + canvas.width / 2, -center.y * scale + canvas.height / 2);
+
+      ctx.beginPath();
+      pathList.forEach((path) => {
+        if (path.length < 2) return;
+        const start = map.project(path[0]);
+        ctx.moveTo(start.x, start.y);
+        path.forEach((lngLat) => {
+          const point = map.project(lngLat);
+          ctx.lineTo(point.x, point.y);
+        });
+      });
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }
+
+    map.on('move', () => {
+      resizeCanvas();
+    });
+
+    map.on('zoom', () => {
+      resizeCanvas();
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      pathList = [];
+      updateDraw();
+    });
+
+    document.getElementById('undoBtn').addEventListener('click', () => {
+      if (pathList.length === 0) return;
+      redoStack.push(pathList.pop());
+      updateDraw();
+    });
+
+    document.getElementById('redoBtn').addEventListener('click', () => {
+      if (redoStack.length === 0) return;
+      pathList.push(redoStack.pop());
+      updateDraw();
+    });
+
+    document.getElementById('exportImgBtn').addEventListener('click', () => {
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = canvas.width;
+      exportCanvas.height = canvas.height;
+      const exportCtx = exportCanvas.getContext('2d');
+
+      exportCtx.drawImage(map.getCanvas(), 0, 0);
+      exportCtx.drawImage(canvas, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = 'map_with_drawing.png';
+      link.href = exportCanvas.toDataURL('image/png');
+      link.click();
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>
