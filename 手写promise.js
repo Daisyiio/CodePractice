@@ -44,7 +44,7 @@ class MyPromise {
       this.#handlers = []
     }
   }
-  setState(state, value) {
+  setState(value, state) {
     if (this.#state !== PENDING) return
     this.#state = state
     this.#value = value
