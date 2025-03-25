@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Element UI 复杂合并测试</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+      /* 自定义悬浮样式 */
+      .custom-hover {
+        background-color: #f5f7fa !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <el-table
+        :data="tableData"
+        :span-method="objectSpanMethod"
+        border
+        style="width: 100%; margin-top: 20px"
+        @cell-mouse-enter="handleHover"
+        @cell-mouse-leave="handleMouseLeave"
+      >
+        <el-table-column prop="id" label="ID" width="100"></el-table-column>
+        <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+        <el-table-column prop="amount1" label="数值 1（元）"></el-table-column>
+        <el-table-column prop="amount2" label="数值 2（元）"></el-table-column>
+        <el-table-column prop="amount3" label="数值 3（元）"></el-table-column>
+      </el-table>
+    </div>
+    
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            tableData: [
+              { id: '1001', name: '张三', amount1: '234', amount2: '3.2', amount3: '500' },
+              { id: '1001', name: '张三', amount1: '165', amount2: '4.43', amount3: '500' },
+              { id: '1002', name: '张三', amount1: '165', amount2: '2.6', amount3: '500' },
+              { id: '1003', name: '李四', amount1: '621', amount2: '2.2', amount3: '320' },
+              { id: '1003', name: '王五', amount1: '539', amount2: '4.1', amount3: '180' }
+            ]
+          };
+        },
+        methods: {
+          handleHover(row, column, cell, event) {
+            const rowIndex = this.tableData.indexOf(row);
+            const tableRows = document.querySelectorAll('.el-table__body-wrapper tbody tr');
+
+            if (!tableRows[rowIndex]) return;
+
+            const currentTds = tableRows[rowIndex].querySelectorAll('td');
+            const currentTdCount = currentTds.length;
+
+            // 从当前行向上遍历
+            for (let i = rowIndex - 1; i >= 0; i--) {
+              const prevRow = tableRows[i];
+              if (!prevRow) continue;
+
+              const prevTds = prevRow.querySelectorAll('td');
+
+              // 如果上一行的 td 数量比当前行多，检查 rowspan 是否覆盖当前行
+              if (prevTds.length > currentTdCount) {
+                prevTds.forEach((td) => {
+                  const rowspan = parseInt(td.getAttribute('rowspan')) || 1;
+                  const startRow = i;
+                  const endRow = i + rowspan - 1;
+
+                  if (rowIndex >= startRow && rowIndex <= endRow) {
+                    td.classList.add('custom-hover');
+                  }
+                });
+              }
+            }
+          },
+
+          handleMouseLeave() {
+            // 鼠标移开，移除所有 hover 样式
+            document.querySelectorAll('td').forEach((td) => {
+              td.classList.remove('custom-hover');
+            });
+          },
+
+          objectSpanMethod({ rowIndex, columnIndex }) {
+            // ID 列
+            if (columnIndex === 0) {
+              if (rowIndex === 0) return { rowspan: 2, colspan: 1 };
+              if (rowIndex === 2) return { rowspan: 1, colspan: 1 };
+              if (rowIndex === 3) return { rowspan: 2, colspan: 1 };
+              return { rowspan: 0, colspan: 0 };
+            }
+
+            // 姓名列
+            if (columnIndex === 1) {
+              if (rowIndex === 0) return { rowspan: 3, colspan: 1 };
+              if (rowIndex === 3) return { rowspan: 1, colspan: 1 };
+              if (rowIndex === 4) return { rowspan: 1, colspan: 1 };
+              return { rowspan: 0, colspan: 0 };
+            }
+
+            // 数值1 列
+            if (columnIndex === 2) {
+              if (rowIndex === 1) return { rowspan: 2, colspan: 1 };
+              return { rowspan: 1, colspan: 1 };
+            }
+
+            // 数值3 列
+            if (columnIndex === 4) {
+              if (rowIndex === 0) return { rowspan: 3, colspan: 1 };
+              return { rowspan: 1, colspan: 1 };
+            }
+
+            return { rowspan: 1, colspan: 1 };
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
