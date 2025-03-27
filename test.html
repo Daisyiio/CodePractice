@@ -1,55 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-      }
-      body,
-      html {
-        height: 3000px;
-      }
-      .top-header {
-        width: 100%;
-        height: 50px;
-        background-color: transparent;
-        position: fixed;
-        top: 0;
-        border-bottom: 1px solid #dcdfe6;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        -webkit-backdrop-filter: saturate(50%) blur(4px);
-        backdrop-filter: saturate(50%) blur(4px);
-        background-image: radial-gradient(transparent 1px, #Fff 1px);
-        background-size: 4px 4px;
-      }
-      li{
-        margin-top: 50px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="top-header"></div>
-    <div>
-      <ul>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-        <li>11111111111</li>
-      </ul>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>用户详情 - Material Design 风格</title>
+  <!-- 引入 Google Fonts 的 Roboto 字体 -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+    /* 全局设置 */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    /* 卡片容器 */
+    .card {
+      background: #fff;
+      width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    /* 卡片头部 */
+    .card-header {
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    /* 详情列表 */
+    .detail-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .detail-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-label {
+      font-weight: 500;
+      color: #757575;
+      flex-basis: 35%;
+    }
+
+    .detail-value {
+      font-weight: 500;
+      color: #424242;
+      flex-basis: 65%;
+      text-align: right;
+    }
+
+    /* 按钮区域 */
+    .btn-group {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      margin: 0 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-edit {
+      background-color: #1976d2;
+      color: #fff;
+    }
+
+    .btn-edit:hover {
+      background-color: #1565c0;
+    }
+
+    .btn-delete {
+      background-color: #d32f2f;
+      color: #fff;
+    }
+
+    .btn-delete:hover {
+      background-color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <h2>用户详情</h2>
     </div>
-  </body>
+    <ul class="detail-list">
+      <li class="detail-item">
+        <span class="detail-label">姓名</span>
+        <span class="detail-value">张三</span>
+      </li>
+      <li class="detail-item">
+        <span class="detail-label">性别</span>
+        <span class="detail-value">男</span>
+      </li>
+      <li class="detail-item">
+        <span class="detail-label">年龄</span>
+        <span class="detail-value">28</span>
+      </li>
+      <li class="detail-item">
+        <span class="detail-label">手机号</span>
+        <span class="detail-value">138-8888-8888</span>
+      </li>
+      <li class="detail-item">
+        <span class="detail-label">邮箱</span>
+        <span class="detail-value">zhangsan@example.com</span>
+      </li>
+    </ul>
+    <div class="btn-group">
+      <button class="btn btn-edit">编辑</button>
+      <button class="btn btn-delete">删除</button>
+    </div>
+  </div>
+</body>
 </html>
